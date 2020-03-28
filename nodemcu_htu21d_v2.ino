@@ -2,8 +2,7 @@
  * ESTE ES el que va
  */
 
-     //lo borre
-
+     
 
 /* 
  HTU21D Humidity Sensor Example Code
