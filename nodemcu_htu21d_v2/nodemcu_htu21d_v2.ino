@@ -146,8 +146,8 @@ void setup()
   timer.setInterval(1000L, myTimerEvent);
   
    thing["node"] >> [](pson& out){
-  // thing["Temperatura"] >> outputValue(temperature_actual);
-    out("temperatura")=in(temperature_actual);
+  thing["Temperatura"] >> outputValue(temperature_actual);
+  //  out("temperatura")=(temperature_actual);
 	};
 }
 
