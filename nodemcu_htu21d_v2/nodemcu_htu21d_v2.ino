@@ -168,18 +168,20 @@ void loop()
   delay(1000);
 
 
- 
+ temp_aux= 28;
 setpoint_float=float(setpoint_int);
-while  (setpoint_float<temperature)
-{
+if ((setpoint_float<temperature))
+            {
+             while  (temp_aux<temperature)
+            {
             digitalWrite(D1, LOW);//enciendo ventilador
 			flag_ventilador_on=HIGH ;// Flag ventilador encendido
 			digitalWrite(D2,LOW);
 			
 			}
 			
-			temp_aux= 28;
-if 	((setpoint_float>(temp_aux))&&(flag_ventilador_on ==HIGH))		
+			
+if 	((temperature<(temp_aux))&&(flag_ventilador_on ==HIGH))		
 {
 digitalWrite(D1, HIGH);
    digitalWrite(D4,LOW);
@@ -188,7 +190,7 @@ digitalWrite(D1, HIGH);
 
 
 
-
+}
 
 }
 
