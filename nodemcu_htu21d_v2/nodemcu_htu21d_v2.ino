@@ -89,7 +89,7 @@ void myTimerEvent()
   Blynk.virtualWrite(V1, ipstring);
 }
 
-WiFiServer server(80);
+//WiFiServer server(80);
 ThingerESP8266 thing(USERNAME, DEVICE_ID, DEVICE_CREDENTIAL);
 
 void setup()
@@ -113,7 +113,7 @@ void setup()
   Serial.println();
  // Serial.print("Connecting to ");
   //Serial.println(ssid);
- thing.add_wifi(SSID, SSID_PASSWORD);
+ thing.add_wifi(ssid, pass);
 
  // WiFi.begin(ssid, pass);
 
@@ -145,9 +145,10 @@ void setup()
   Blynk.begin(auth, ssid, pass);
   timer.setInterval(1000L, myTimerEvent);
   
-  
-   thing["Temperatura"] >> outputValue(temperature_actual);
-    
+   thing["node"] >> [](pson& out){
+  // thing["Temperatura"] >> outputValue(temperature_actual);
+    out("temperatura")=in(temperature_actual);
+	};
 }
 
 void loop()
