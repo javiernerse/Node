@@ -153,9 +153,9 @@ void loop()
   Serial.print("Temperature: ");
   Serial.print(temperature, 1); //Print float with one decimal
   Serial.print(" C");
-  Serial.print(" Relative Humidity: ");
-  Serial.print(relativeHumidity, 1);
-  Serial.print(" %");
+  // Serial.print(" Relative Humidity: ");
+  //Serial.print(relativeHumidity, 1);
+  //Serial.print(" %");
   Serial.print("Setpoint: ");
   Serial.print(setpoint_float,1);
   Serial.print(" ");
