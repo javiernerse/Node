@@ -11,7 +11,7 @@
  Date: September 15th, 2013
  License: This code is public domain but you buy me a beer if you use this and we meet someday (Beerware license).
  
- Get humidity and temperature from the HTU21D sensor.
+ Get humidity and temperature_actual from the HTU21D sensor.
  
  Hardware Connections (Breakoutboard to Arduino):
  -VCC = 3.3V
@@ -56,7 +56,7 @@ char pass[] = "capocha123";
 byte sensorStatus;
 BlynkTimer timer;
 
-float temperature;
+float temperature_actual;
 float relativeHumidity;
 IPAddress ipAddress;  
 String ipstring;
@@ -65,7 +65,8 @@ bool token =false;
 int setpoint_int=32;
 float setpoint_float;
 bool flag_ventilador_on;
-float temp_min=28;
+float sp_temp_min_float;
+int sp_temp_min_int=28;
 
 
 
@@ -77,7 +78,7 @@ void myTimerEvent()
   // Please don't send more that 10 values per second.
   String temp_str;
   
-  temp_str=String(temperature) + String("c") + String(" ") + String(relativeHumidity)+ String("%");
+  temp_str=String(temperature_actual) + String("c") + String(" ") + String(relativeHumidity)+ String("%");
   Blynk.virtualWrite(V5, temp_str);
   
   Blynk.virtualWrite(V1, ipstring);
@@ -145,13 +146,13 @@ void loop()
   
   timer.run(); // Initiates BlynkTimer
   unsigned int rawHumidity = htdu21d_readHumidity();
-  unsigned int rawTemperature = htdu21d_readTemp();
+  unsigned int rawtemperature_actual = htdu21d_readTemp();
 
-   temperature = calc_temp(rawTemperature);
+   temperature_actual = calc_temp(rawtemperature_actual);
    relativeHumidity = calc_humidity(rawHumidity); //Turn the humidity signal into actual humidity
 
-  Serial.print("Temperature: ");
-  Serial.print(temperature, 1); //Print float with one decimal
+  Serial.print("temperature_actual: ");
+  Serial.print(temperature_actual, 1); //Print float with one decimal
   Serial.print(" C");
   // Serial.print(" Relative Humidity: ");
   //Serial.print(relativeHumidity, 1);
@@ -160,7 +161,7 @@ void loop()
   Serial.print("Setpoint: ");
   Serial.print(setpoint_float,1);
   Serial.print("   ");
-  Serial.print(temp_min,1);
+  Serial.print(sp_temp_min_float,1);
   Serial.print("   ");
   Serial.print(" Flag ventilador: ");
   Serial.print(flag_ventilador_on);
@@ -168,11 +169,11 @@ void loop()
   delay(1000);
 
 
- temp_min= 28;
-setpoint_float=float(setpoint_int);
-if ((setpoint_float<temperature))
+	sp_temp_min_float=float(sp_temp_min_int);
+	setpoint_float=float(setpoint_int);
+if ((setpoint_float<temperature_actual))
     {
-             if  ((temp_min<temperature) && (flag_ventilador_on ==LOW))
+             if  ((sp_temp_min_float<temperature_actual) && (flag_ventilador_on ==LOW))
             {
             digitalWrite(D1, LOW);//enciendo ventilador
 			flag_ventilador_on=HIGH ;// Flag ventilador encendido
@@ -184,15 +185,11 @@ if ((setpoint_float<temperature))
 			
 			
 			
-if 	((temperature<(temp_min))&&(flag_ventilador_on ==HIGH))		
+if 	((temperature_actual<(sp_temp_min_float))&&(flag_ventilador_on ==HIGH))		
 				{
 					digitalWrite(D1, HIGH);
 					digitalWrite(D4,HIGH);
 					flag_ventilador_on= LOW ;
-
-
-
-
 				}
 
 	
@@ -203,12 +200,12 @@ if 	((temperature<(temp_min))&&(flag_ventilador_on ==HIGH))
 
 
 
- // if (setpoint_float<temperature)
+ // if (setpoint_float<temperature_actual)
  // {digitalWrite(D1, LOW);
  // digitalWrite(D2,LOW);
  // flag_ventilador_on=HIGH ;
  // }
-  // if ((setpoint_float>(temp_min))&&(flag_ventilador_on ==HIGH))
+  // if ((setpoint_float>(sp_temp_min_float))&&(flag_ventilador_on ==HIGH))
   // {
   // digitalWrite(D1, HIGH);
   // digitalWrite(D4,LOW);
@@ -325,7 +322,7 @@ token=false;
  // client.println("<a href=\"/LED=OFF\"\"><button>Turn Off </button></a><br />");  
   // client.println("<br><br>");
   // client.println("Temperatura actual:");
-  // client.println(temperature);
+  // client.println(temperature_actual);
   // client.println("<br><br>");
   // client.println("Humedad:");
   // client.print(relativeHumidity);
@@ -366,10 +363,10 @@ token=false;
  }
 
 
-//Read the uncompensated temperature value
+//Read the uncompensated temperature_actual value
 unsigned int htdu21d_readTemp()
 {
-  //Request the temperature
+  //Request the temperature_actual
   Wire.beginTransmission(HTDU21D_ADDRESS);
   Wire.write(TRIGGER_TEMP_MEASURE_NOHOLD);
   Wire.endTransmission();
@@ -394,36 +391,37 @@ unsigned int htdu21d_readTemp()
   lsb = Wire.read();
   crc = Wire.read(); //We don't do anything with CRC for now
 
-  unsigned int temperature = ((unsigned int)msb << 8) | lsb;
-  temperature &= 0xFFFC; //Zero out the status bits but keep them in place
+  unsigned int temperature_actual = ((unsigned int)msb << 8) | lsb;
+  temperature_actual &= 0xFFFC; //Zero out the status bits but keep them in place
 
-  return temperature;
+  return temperature_actual;
 }
 
 //Read the humidity
 unsigned int htdu21d_readHumidity()
 {
-  byte msb, lsb, checksum;
+	byte msb, lsb, checksum;
 
   //Request a humidity reading
-  Wire.beginTransmission(HTDU21D_ADDRESS);
-  Wire.write(TRIGGER_HUMD_MEASURE_NOHOLD); //Measure humidity with no bus holding
-  Wire.endTransmission();
+	Wire.beginTransmission(HTDU21D_ADDRESS);
+	Wire.write(TRIGGER_HUMD_MEASURE_NOHOLD); //Measure humidity with no bus holding
+	Wire.endTransmission();
 
   //Hang out while measurement is taken. 50mS max, page 4 of datasheet.
-  delay(55);
+	delay(55);
 
   //Read result
-  Wire.requestFrom(HTDU21D_ADDRESS, 3);
+	Wire.requestFrom(HTDU21D_ADDRESS, 3);
 
   //Wait for data to become available
-  int counter = 0;
-  while(Wire.available() < 3)
-  {
-    counter++;
-    delay(1);
-    if(counter > 100) return 0; //Error out
-  }
+	int counter = 0;
+	while(Wire.available() < 3)
+		{
+				counter++;
+				delay(1);
+				if(counter > 100)
+				return 0; //Error out
+		}
 
   msb = Wire.read();
   lsb = Wire.read();
@@ -435,13 +433,13 @@ unsigned int htdu21d_readHumidity()
   return(rawHumidity);
 }
 
-//Given the raw temperature data, calculate the actual temperature
+//Given the raw temperature_actual data, calculate the actual temperature_actual
 float calc_temp(int SigTemp)
 {
   float tempSigTemp = SigTemp / (float)65536; //2^16 = 65536
-  float realTemperature = -46.85 + (175.72 * tempSigTemp); //From page 14
+  float realtemperature_actual = -46.85 + (175.72 * tempSigTemp); //From page 14
 
-  return(realTemperature);  
+  return(realtemperature_actual);  
 }
 
 //Given the raw humidity data, calculate the actual relative humidity
@@ -531,4 +529,9 @@ unsigned int check_crc(uint16_t message_from_sensor, uint8_t check_value_from_se
  BLYNK_WRITE(V2) // V5 is the number of Virtual Pin  
 {
    setpoint_int = param.asInt();
+} 
+
+BLYNK_WRITE(V0) // V5 is the number of Virtual Pin  
+{
+   sp_temp_min_int = param.asInt();
 } 
