@@ -21,7 +21,7 @@
  
  Serial.print it out at 9600 baud to serial monitor.
  */
-
+#include <ThingerESP8266.h>
 #include <Wire.h>
 #define BLYNK_PRINT Serial
 #include <ESP8266WiFi.h>
@@ -52,6 +52,11 @@ char pass[] = "capocha123";
 #define WRITE_USER_REG  0xE6
 #define READ_USER_REG  0xE7
 #define SOFT_RESET  0xFE
+
+//Credenciales para el thing.io
+#define USERNAME "javners"
+#define DEVICE_ID "node"
+#define DEVICE_CREDENTIAL "123456"
 
 byte sensorStatus;
 BlynkTimer timer;
@@ -85,6 +90,7 @@ void myTimerEvent()
 }
 
 WiFiServer server(80);
+ThingerESP8266 thing(USERNAME, DEVICE_ID, DEVICE_CREDENTIAL);
 
 void setup()
 { pinMode(D0,OUTPUT);
@@ -105,9 +111,10 @@ void setup()
   Serial.println("HTU21D Example!");
   Serial.println();
   Serial.println();
-  Serial.print("Connecting to ");
-  Serial.println(ssid);
- 
+ // Serial.print("Connecting to ");
+  //Serial.println(ssid);
+ thing.add_wifi(SSID, SSID_PASSWORD);
+
  // WiFi.begin(ssid, pass);
 
 
@@ -137,11 +144,15 @@ void setup()
   Wire.begin(D5,D6);
   Blynk.begin(auth, ssid, pass);
   timer.setInterval(1000L, myTimerEvent);
+  
+  
+   thing["Temperatura"] >> outputValue(temperature_actual);
+    
 }
 
 void loop()
 { int control;
-  
+  thing.handle();
   Blynk.run();
   
   timer.run(); // Initiates BlynkTimer
