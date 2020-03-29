@@ -148,7 +148,7 @@ void setup()
   
    thing["node"] >> [](pson& out){
   //thing["Temperatura"] >> temp_para_thinger_io;
-    out("Temperatura")=temp_para_thinger_io;
+    out["Temperatura"] = temp_para_thinger_io;
 	};
 }
 
@@ -166,7 +166,7 @@ void loop()
    temperature_actual = calc_temp(rawtemperature_actual);
    relativeHumidity = calc_humidity(rawHumidity); //Turn the humidity signal into actual humidity
   
-  temp_para_thinger_io= temperature_actualtura; 
+  temp_para_thinger_io = temperature_actual; 
 
   Serial.print("temperature_actual: ");
   Serial.print(temperature_actual, 1); //Print float with one decimal
@@ -184,7 +184,7 @@ void loop()
   Serial.print(flag_ventilador_on);
   Serial.print("   ");
   Serial.print(" debugg temp io ");
-  Serial.print(temp_para_thinger_io);
+  Serial.print(temp_para_thinger_io,1);
   
   Serial.println();
   delay(1000);
