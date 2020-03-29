@@ -72,6 +72,7 @@ float setpoint_float;
 bool flag_ventilador_on;
 float sp_temp_min_float;
 int sp_temp_min_int=28;
+float temp_para_thinger_io;  //solo para debugg
 
 
 
@@ -146,8 +147,8 @@ void setup()
   timer.setInterval(1000L, myTimerEvent);
   
    thing["node"] >> [](pson& out){
-  thing["Temperatura"] >> outputValue(temperature_actual);
-  //  out("temperatura")=(temperature_actual);
+  //thing["Temperatura"] >> temp_para_thinger_io;
+    out("Temperatura")=temp_para_thinger_io;
 	};
 }
 
@@ -157,11 +158,15 @@ void loop()
   Blynk.run();
   
   timer.run(); // Initiates BlynkTimer
+  
   unsigned int rawHumidity = htdu21d_readHumidity();
   unsigned int rawtemperature_actual = htdu21d_readTemp();
+  
 
    temperature_actual = calc_temp(rawtemperature_actual);
    relativeHumidity = calc_humidity(rawHumidity); //Turn the humidity signal into actual humidity
+  
+  temp_para_thinger_io= temperature_actualtura; 
 
   Serial.print("temperature_actual: ");
   Serial.print(temperature_actual, 1); //Print float with one decimal
@@ -177,6 +182,10 @@ void loop()
   Serial.print("   ");
   Serial.print(" Flag ventilador: ");
   Serial.print(flag_ventilador_on);
+  Serial.print("   ");
+  Serial.print(" debugg temp io ");
+  Serial.print(temp_para_thinger_io);
+  
   Serial.println();
   delay(1000);
 
@@ -444,6 +453,20 @@ unsigned int htdu21d_readHumidity()
 
   return(rawHumidity);
 }
+
+
+// float temp_thinger( float variable_temp_thiger_io){
+
+// return variable_temp_thiger_io;
+
+
+
+// }
+
+
+
+
+
 
 //Given the raw temperature_actual data, calculate the actual temperature_actual
 float calc_temp(int SigTemp)
