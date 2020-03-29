@@ -62,10 +62,10 @@ IPAddress ipAddress;
 String ipstring;
 String port_state[4];
 bool token =false;
-int setpoint_int=28;
+int setpoint_int=32;
 float setpoint_float;
 bool flag_ventilador_on;
-float temp_aux;
+float temp_aux=28;
 
 
 
@@ -107,29 +107,29 @@ void setup()
   Serial.print("Connecting to ");
   Serial.println(ssid);
  
-  WiFi.begin(ssid, pass);
+ // WiFi.begin(ssid, pass);
 
 
-  while (WiFi.status() != WL_CONNECTED) {
-    delay(500);
-    Serial.print(".");
-  }
-  Serial.println("");
-  Serial.println("WiFi connected");
+  // while (WiFi.status() != WL_CONNECTED) {
+    // delay(500);
+    // Serial.print(".");
+  // }
+  // Serial.println("");
+  // Serial.println("WiFi connected");
  
-  // Start the server
-  server.begin();
-  Serial.println("Server started");
+  // // Start the server
+  // server.begin();
+  // Serial.println("Server started");
  
-  // Print the IP address
-  Serial.print("Use this URL to connect: ");
-  Serial.print("http://");
+  // // Print the IP address
+  // Serial.print("Use this URL to connect: ");
+  // Serial.print("http://");
   //Serial.print(WiFi.localIP());
  // ipstring=WiFi.localIP().toString().c_str();
-  ipAddress=WiFi.localIP();
-  ipstring=String(ipAddress[0])+ String(".") + String(ipAddress[1]) + String(".") + String(ipAddress[2]) + String(".") + String(ipAddress[3]) ;
+  //ipAddress=WiFi.localIP();
+ // ipstring=String(ipAddress[0])+ String(".") + String(ipAddress[1]) + String(".") + String(ipAddress[2]) + String(".") + String(ipAddress[3]) ;
   //Blynk.virtualWrite(V1, "ipstring");
-  Serial.print(ipstring);
+//  Serial.print(ipstring);
   Serial.println("/");
 
 
@@ -281,32 +281,32 @@ token=false;
 
 
 // Check if a client has connected
-  WiFiClient client = server.available();
-  if (!client)
+ // WiFiClient client = server.available();
+ // if (!client)
   {
-    return;
+ //   return;
   }
  
   // Wait until the client sends some data
  // Serial.println("new client");
-  while(!client.available()){
+ // while(!client.available()){
   //  temp=analogRead(A0);
    
       
-    delay(1);
+  //  delay(1);
   }
   
-  client.flush();
-  client.println("HTTP/1.1 200 OK");
-  client.println("Content-Type: text/html");
-  client.println(""); //  do not forget this one
- // client.println("Connection: close");
+  // client.flush();
+  // client.println("HTTP/1.1 200 OK");
+  // client.println("Content-Type: text/html");
+  // client.println(""); //  do not forget this one
+ // // client.println("Connection: close");
 
- // client.println("Refresh: 5");
-  client.println();
-  client.println("<!DOCTYPE HTML>");
-  client.println("<html>");
-  client.println("<br><br>");
+ // // client.println("Refresh: 5");
+  // client.println();
+  // client.println("<!DOCTYPE HTML>");
+  // client.println("<html>");
+  // client.println("<br><br>");
 //  client.print("Led pin is now: ");
  
 //  if(value == HIGH) {
@@ -315,32 +315,32 @@ token=false;
 //    client.print("Off");
 //  }
   
-  client.println("<br><br>");
+ // client.println("<br><br>");
     
  //client.println("<a href=\"/LED=ON\"\"><button>Turn On </button></a>");
  // client.println("<a href=\"/LED=OFF\"\"><button>Turn Off </button></a><br />");  
-  client.println("<br><br>");
-  client.println("Temperatura actual:");
-  client.println(temperature);
-  client.println("<br><br>");
-  client.println("Humedad:");
-  client.print(relativeHumidity);
+  // client.println("<br><br>");
+  // client.println("Temperatura actual:");
+  // client.println(temperature);
+  // client.println("<br><br>");
+  // client.println("Humedad:");
+  // client.print(relativeHumidity);
   
-  client.println("<br><br>");
- // client.println("D0:");
-  client.println(port_state[0]);
+  // client.println("<br><br>");
+ // // client.println("D0:");
+  // client.println(port_state[0]);
   
-  client.println("<br><br>");
- // client.println("D1:");
-  client.println(port_state[1]);
+  // client.println("<br><br>");
+ // // client.println("D1:");
+  // client.println(port_state[1]);
   
-  client.println("<br><br>");
- // client.println("D2:");
-  client.println(port_state[2]);
+  // client.println("<br><br>");
+ // // client.println("D2:");
+  // client.println(port_state[2]);
   
-  client.println("<br><br>");
-  //client.println("D4:");
-  client.println(port_state[3]);
+  // client.println("<br><br>");
+  // //client.println("D4:");
+  // client.println(port_state[3]);
   
   
   
@@ -352,11 +352,11 @@ token=false;
 //  client.println("<br><br>");
 // 
 // client.println("</form>");
-  client.println("</html>");
+ // client.println("</html>");
 //  request="";
-  client.stop();
+ // client.stop();
  
-  delay(1);
+ // delay(1);
   //Serial.println("Client disonnected");
   //Serial.println("");
  }
