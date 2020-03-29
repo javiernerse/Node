@@ -65,7 +65,7 @@ bool token =false;
 int setpoint_int=32;
 float setpoint_float;
 bool flag_ventilador_on;
-float temp_aux=28;
+float temp_min=28;
 
 
 
@@ -160,7 +160,7 @@ void loop()
   Serial.print("Setpoint: ");
   Serial.print(setpoint_float,1);
   Serial.print("   ");
-  Serial.print(temp_aux,1);
+  Serial.print(temp_min,1);
   Serial.print("   ");
   Serial.print(" Flag ventilador: ");
   Serial.print(flag_ventilador_on);
@@ -168,20 +168,23 @@ void loop()
   delay(1000);
 
 
- temp_aux= 28;
+ temp_min= 28;
 setpoint_float=float(setpoint_int);
 if ((setpoint_float<temperature))
     {
-             while  (temp_aux<temperature)
+             if  ((temp_min<temperature) && (flag_ventilador_on ==LOW))
             {
             digitalWrite(D1, LOW);//enciendo ventilador
 			flag_ventilador_on=HIGH ;// Flag ventilador encendido
 			digitalWrite(D4,LOW);
 			
 			}
+	}		
 			
 			
-            if 	((temperature<(temp_aux))&&(flag_ventilador_on ==HIGH))		
+			
+			
+if 	((temperature<(temp_min))&&(flag_ventilador_on ==HIGH))		
 				{
 					digitalWrite(D1, HIGH);
 					digitalWrite(D4,HIGH);
@@ -192,7 +195,7 @@ if ((setpoint_float<temperature))
 
 				}
 
-	}
+	
 
 
 
@@ -205,7 +208,7 @@ if ((setpoint_float<temperature))
  // digitalWrite(D2,LOW);
  // flag_ventilador_on=HIGH ;
  // }
-  // if ((setpoint_float>(temp_aux))&&(flag_ventilador_on ==HIGH))
+  // if ((setpoint_float>(temp_min))&&(flag_ventilador_on ==HIGH))
   // {
   // digitalWrite(D1, HIGH);
   // digitalWrite(D4,LOW);
@@ -213,19 +216,20 @@ if ((setpoint_float<temperature))
   
   // }
   
-  if (Serial.available()){
-  control=Serial.read();
-  switch (control) {
-  case 0:
-    flag_ventilador_on=HIGH ;
-    break;
-  case 1:
-    flag_ventilador_on= LOW ;
-    break;
-  default:
+  if (Serial.available())
+  
+  {
+		control=Serial.read();
+				switch (control) 
+					{
+						case 0: flag_ventilador_on=HIGH ;
+								break;
+						case 1: flag_ventilador_on= LOW ;
+								break;
+						default:
     // statements
-    break;
-}
+								break;
+					}
   }
   
   
@@ -294,7 +298,7 @@ token=false;
    
       
   //  delay(1);
-  }
+  //}
   
   // client.flush();
   // client.println("HTTP/1.1 200 OK");
