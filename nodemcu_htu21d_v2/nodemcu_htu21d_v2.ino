@@ -139,7 +139,7 @@ void setup()
 }
 
 void loop()
-{ 
+{ int control;
   
   Blynk.run();
   
@@ -156,32 +156,75 @@ void loop()
   // Serial.print(" Relative Humidity: ");
   //Serial.print(relativeHumidity, 1);
   //Serial.print(" %");
+  Serial.print("   ");
   Serial.print("Setpoint: ");
   Serial.print(setpoint_float,1);
-  Serial.print(" ");
+  Serial.print("   ");
   Serial.print(temp_aux,1);
-  Serial.print(" ");
+  Serial.print("   ");
+  Serial.print(" Flag ventilador: ");
   Serial.print(flag_ventilador_on);
   Serial.println();
   delay(1000);
 
 
- temp_aux= temperature * 0.9;
+ 
 setpoint_float=float(setpoint_int);
- if (setpoint_float<temperature)
- {digitalWrite(D1, LOW);
- digitalWrite(D2,LOW);
- flag_ventilador_on=HIGH ;
- }
-  if ((setpoint_float>(temp_aux))&&(flag_ventilador_on ==HIGH))
-  {
-  digitalWrite(D1, HIGH);
-  digitalWrite(D4,LOW);
+while  (setpoint_float<temperature)
+{
+            digitalWrite(D1, LOW);//enciendo ventilador
+			flag_ventilador_on=HIGH ;// Flag ventilador encendido
+			digitalWrite(D2,LOW);
+			
+			}
+			
+			temp_aux= 28;
+if 	((setpoint_float>(temp_aux))&&(flag_ventilador_on ==HIGH))		
+{
+digitalWrite(D1, HIGH);
+   digitalWrite(D4,LOW);
   flag_ventilador_on= LOW ;
+
+
+
+
+
+
+}
+
+
+
+
+
+
+
+ // if (setpoint_float<temperature)
+ // {digitalWrite(D1, LOW);
+ // digitalWrite(D2,LOW);
+ // flag_ventilador_on=HIGH ;
+ // }
+  // if ((setpoint_float>(temp_aux))&&(flag_ventilador_on ==HIGH))
+  // {
+  // digitalWrite(D1, HIGH);
+  // digitalWrite(D4,LOW);
+  // flag_ventilador_on= LOW ;
   
+  // }
+  
+  if (Serial.available()){
+  control=Serial.read();
+  switch (control) {
+  case 0:
+    flag_ventilador_on=HIGH ;
+    break;
+  case 1:
+    flag_ventilador_on= LOW ;
+    break;
+  default:
+    // statements
+    break;
+}
   }
-  
-  
   
   
  //********************************************************************************************** 
