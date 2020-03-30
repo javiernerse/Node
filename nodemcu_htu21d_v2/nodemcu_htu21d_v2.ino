@@ -72,7 +72,10 @@ float setpoint_float;
 bool flag_ventilador_on;
 float sp_temp_min_float;
 int sp_temp_min_int=28;
-float temp_para_thinger_io;  //solo para debugg
+
+//Variable para thinger.io
+float temp_para_thinger_io;  
+bool  led_D0_thinger_io; 
 
 
 
@@ -149,7 +152,7 @@ void setup()
    thing["node"] >> [](pson& out){
   //thing["Temperatura"] >> temp_para_thinger_io;
     out["Temperatura"] = temp_para_thinger_io;
-	out["Led D0"] = flag_ventilador_on;
+	out["Led_D0"] =  led_D0_thinger_io;
 	};
 }
 
@@ -200,6 +203,7 @@ if ((setpoint_float<temperature_actual))
             digitalWrite(D1, LOW);//enciendo ventilador
 			flag_ventilador_on=HIGH ;// Flag ventilador encendido
 			digitalWrite(D4,LOW);
+			 led_D0_thinger_io = HIGH ;
 			
 			}
 	}		
@@ -212,6 +216,7 @@ if 	((temperature_actual<(sp_temp_min_float))&&(flag_ventilador_on ==HIGH))
 					digitalWrite(D1, HIGH);
 					digitalWrite(D4,HIGH);
 					flag_ventilador_on= LOW ;
+					led_D0_thinger_io = LOW ;
 				}
 
 	
