@@ -97,7 +97,7 @@ void myTimerEvent()
   Blynk.virtualWrite(V1, ipstring);
 }
 
-WiFiServer server(80);
+//WiFiServer server(80);  //wifi
 ThingerESP8266 thing(USERNAME, DEVICE_ID, DEVICE_CREDENTIAL);
 
 void setup()
@@ -124,28 +124,28 @@ void setup()
   /* Conexion con thinher.IO*/
   thing.add_wifi(ssid, pass);
  
-  Serial.print("Connecting to ");
-  Serial.println(ssid);
+  //Serial.print("Connecting to "); //wifi
+  //Serial.println(ssid); //wifi
  
   /* Inicializo la placa WIFI */
-	WiFi.begin(ssid, pass);
+	WiFi.begin(ssid, pass);         //wifi
   
-   while (WiFi.status() != WL_CONNECTED) 
-   {
-     delay(500);
-     Serial.print(".");
-   }
-   Serial.println("");
-   Serial.println("WiFi connected");
+   //while (WiFi.status() != WL_CONNECTED)  //wifi 
+   //{
+   //  delay(500);                             //wifi
+   //  Serial.print(".");//wifi
+   //}
+   //Serial.println("");//wifi
+   //Serial.println("WiFi connected");//wifi
  
    /* Start the server*/
-   server.begin();
-   Serial.println("Server started");
+   //server.begin();//wifi
+   //Serial.println("Server started");//wifi
  
    /* Print the IP address*/
-	Serial.print("Use this URL to connect: ");
-	Serial.print("http://");
-	Serial.print(WiFi.localIP());
+//	Serial.print("Use this URL to connect: ");	//wifi
+//	Serial.print("http://");					//wifi
+//wifi	Serial.print(WiFi.localIP());
  
  {/*******************************************************************************************************/
  /*Esta parte de codigo se implemento para mostrar la IP en el Display de BLYNK*/
@@ -175,10 +175,14 @@ void setup()
 	out["Led_D4"] =  led_D4_thinger_io; 
 	out["setpoint_temp_max"] = setpoint_float ;
 	out["setpoint_temp_min"] = sp_temp_min_float ;
-	sp_temp_min_int = out ;
+	
 	
 	
 	};
+	
+	thing[“hysteresis”] << [](pson& in){
+    sp_temp_min_int  = in;//vale of your slider on dashboar
+};
 }
 
 void loop()
@@ -355,86 +359,86 @@ token=false;
 
 
 
-	// Check if a client has connected
- {
-		WiFiClient client = server.available();
-			if (!client)
-				{
-				return;
-				}
+	// // Check if a client has connected
+ // {
+		// WiFiClient client = server.available();//wifi
+			// if (!client)                       //wifi
+				// {								//wifi
+				// return;							//wifi					
+				// }                                //wifi
  
-  // Wait until the client sends some data
- // Serial.println("new client");
- // while(!client.available()){
-  //  temp=analogRead(A0);
+  // // Wait until the client sends some data
+ // // Serial.println("new client");
+ // // while(!client.available()){
+  // //  temp=analogRead(A0);
    
       
-  //  delay(1);
-  //}
+  // //  delay(1);
+  // //}
   
-		client.flush();
-		client.println("HTTP/1.1 200 OK");
-		client.println("Content-Type: text/html");
-		client.println(""); //  do not forget this one
-		//client.println("Connection: close");
-		//client.println("Refresh: 5");
-		client.println();
-		client.println("<!DOCTYPE HTML>");
-		client.println("<html>");
-		client.println("<br><br>");
+		// client.flush();									//wifi
+		// client.println("HTTP/1.1 200 OK");				//wifi
+		// client.println("Content-Type: text/html");		//wifi
+		// client.println(""); //  do not forget this one
+		// //client.println("Connection: close");
+		// //client.println("Refresh: 5");
+		// client.println();								//wifi
+		// client.println("<!DOCTYPE HTML>");				//wifi
+		// client.println("<html>");						//wifi
+		// client.println("<br><br>");						//wifi
 	
-//  client.print("Led pin is now: ");
- //  if(value == HIGH) {
-//    client.print("On");
-//  } else {
-//    client.print("Off");
-//  }
+// //  client.print("Led pin is now: ");
+ // //  if(value == HIGH) {
+// //    client.print("On");
+// //  } else {
+// //    client.print("Off");
+// //  }
   
- // client.println("<br><br>");
+ // // client.println("<br><br>");
     
- //client.println("<a href=\"/LED=ON\"\"><button>Turn On </button></a>");
- // client.println("<a href=\"/LED=OFF\"\"><button>Turn Off </button></a><br />");  
-  // client.println("<br><br>");
+ // //client.println("<a href=\"/LED=ON\"\"><button>Turn On </button></a>");
+ // // client.println("<a href=\"/LED=OFF\"\"><button>Turn Off </button></a><br />");  
+  // // client.println("<br><br>");
  
 
-		client.println("Temperatura actual:");
-		client.println(temperature_actual);
-		client.println("<br><br>");
+		// client.println("Temperatura actual:");				//wifi
+		// client.println(temperature_actual);
+		// client.println("<br><br>");
   
-		client.println("Humedad:");
-		client.print(relativeHumidity);
-		client.println("<br><br>");
+		// client.println("Humedad:");
+		// client.print(relativeHumidity);
+		// client.println("<br><br>");
 
-		client.println("D0:");
-		client.println(port_state[0]);
+		// client.println("D0:");
+		// client.println(port_state[0]);
   
-		client.println("<br><br>");
-		client.println("D1:");
-		client.println(port_state[1]);
+		// client.println("<br><br>");
+		// client.println("D1:");
+		// client.println(port_state[1]);
   
-		client.println("<br><br>");
-		client.println("D2:");
-		client.println(port_state[2]);
+		// client.println("<br><br>");
+		// client.println("D2:");
+		// client.println(port_state[2]);
   
-		client.println("<br><br>");
-		client.println("D4:");
-		client.println(port_state[3]);
-  
-  
+		// client.println("<br><br>");
+		// client.println("D4:");
+		// client.println(port_state[3]);
   
   
-//   client.println("<form>");
-//  client.println("<input type = 'text' name = 'prueba' /> ");
-//  
-//  client.println("<input type='submit' value='Enviar'/>");
-//  client.println("<br><br>");
-// 
-// client.println("</form>");
-  client.println("</html>");
-  //request="";
-  client.stop();
+  
+  
+// //   client.println("<form>");
+// //  client.println("<input type = 'text' name = 'prueba' /> ");
+// //  
+// //  client.println("<input type='submit' value='Enviar'/>");
+// //  client.println("<br><br>");
+// // 
+// // client.println("</form>");
+  // client.println("</html>");					//wifi
+  // //request="";
+  // client.stop();								//wifi	
  
-  delay(1);
+  // delay(1);										//wifi
   //Serial.println("Client disonnected");
   //Serial.println("");
  }
