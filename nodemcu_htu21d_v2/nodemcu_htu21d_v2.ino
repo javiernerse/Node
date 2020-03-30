@@ -182,7 +182,7 @@ void loop()
  
 
   thing.handle();
-  //Blynk.run();
+  Blynk.run();
   timer.run(); // Initiates BlynkTimer
   
   unsigned int rawHumidity = htdu21d_readHumidity();
