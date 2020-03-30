@@ -407,7 +407,7 @@ token=false;
 // 
 // client.println("</form>");
   client.println("</html>");
-  request="";
+  //request="";
   client.stop();
  
   delay(1);
