@@ -213,7 +213,7 @@ void loop()
 
   Serial.print("Temp. Actual: ");
   Serial.print(temperature_actual, 1); //Print float with one decimal
-  Aerial.print((char)0xB0);
+  Serial.print((char)0xB0);
   Serial.print("C");
   Serial.print(" Humedad Rel: ");
   Serial.print(relativeHumidity, 1);
