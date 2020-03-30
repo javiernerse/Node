@@ -180,7 +180,7 @@ void setup()
 	
 	thing["hysteresis"] << [](pson& in)
 	{
-    sp_temp_min_thinger_io;  = in ;//vale of your slider on dashboar
+    sp_temp_min_thinger_io  = in ;//vale of your slider on dashboar
 	};
 }
 
