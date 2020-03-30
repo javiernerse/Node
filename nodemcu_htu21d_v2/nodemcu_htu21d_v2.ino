@@ -80,7 +80,8 @@ int  led_D0_thinger_io;
 int  led_D1_thinger_io;
 int  led_D2_thinger_io;
 int  led_D4_thinger_io;
-
+int  sp_temp_min_thinger_io;
+int  sp_temp_max_thinger_io;
 
 
 
@@ -175,14 +176,12 @@ void setup()
 	out["Led_D4"] =  led_D4_thinger_io; 
 	out["setpoint_temp_max"] = setpoint_float ;
 	out["setpoint_temp_min"] = sp_temp_min_float ;
-	
-	
-	
 	};
 	
-	thing[“hysteresis”] << [](pson& in){
-    sp_temp_min_int  = in;//vale of your slider on dashboar
-};
+	thing["hysteresis"] << [](pson& in)
+	{
+    sp_temp_min_thinger_io;  = in ;//vale of your slider on dashboar
+	};
 }
 
 void loop()
@@ -245,7 +244,9 @@ void loop()
   /********************************************************************************************************/
   /* En esta seccion se ha el lazo de control ON-OFF.*/
 {	
-	sp_temp_min_float=float(sp_temp_min_int);
+//	sp_temp_min_float=float(sp_temp_min_int);
+	sp_temp_min_float = float(sp_temp_min_thinger_io);
+	
 	setpoint_float=float(setpoint_int);
 	
 	
@@ -441,7 +442,7 @@ token=false;
   // delay(1);										//wifi
   //Serial.println("Client disonnected");
   //Serial.println("");
- }
+ //}
 }// fin de loop
 
 //Read the uncompensated temperature_actual value
