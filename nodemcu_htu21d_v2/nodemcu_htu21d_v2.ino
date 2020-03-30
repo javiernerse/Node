@@ -175,7 +175,7 @@ void setup()
 	out["Led_D4"] =  led_D4_thinger_io; 
 	out["setpoint_temp_max"] = setpoint_float ;
 	out["setpoint_temp_min"] = sp_temp_min_float ;
-	sp_temp_min_int = in ;
+	sp_temp_min_int = out ;
 	
 	
 	};
