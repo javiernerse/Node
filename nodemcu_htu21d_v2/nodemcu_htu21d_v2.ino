@@ -171,7 +171,10 @@ void loop()
    relativeHumidity = calc_humidity(rawHumidity); //Turn the humidity signal into actual humidity
   
   temp_para_thinger_io = temperature_actual; 
-
+  led_D0_thinger_io = flag_ventilador_on ;
+  
+  
+  
   Serial.print("temperature_actual: ");
   Serial.print(temperature_actual, 1); //Print float with one decimal
   Serial.print(" C");
@@ -203,7 +206,7 @@ if ((setpoint_float<temperature_actual))
             digitalWrite(D1, LOW);//enciendo ventilador
 			flag_ventilador_on=HIGH ;// Flag ventilador encendido
 			digitalWrite(D4,LOW);
-			 led_D0_thinger_io = HIGH ;
+			 //led_D0_thinger_io = true ;
 			
 			}
 	}		
@@ -216,7 +219,7 @@ if 	((temperature_actual<(sp_temp_min_float))&&(flag_ventilador_on ==HIGH))
 					digitalWrite(D1, HIGH);
 					digitalWrite(D4,HIGH);
 					flag_ventilador_on= LOW ;
-					led_D0_thinger_io = LOW ;
+					//led_D0_thinger_io = false ;
 				}
 
 	
