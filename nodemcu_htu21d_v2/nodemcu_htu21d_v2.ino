@@ -75,7 +75,7 @@ int sp_temp_min_int=28;
 
 //Variable para thinger.io
 float temp_para_thinger_io;  
-bool  led_D0_thinger_io; 
+int  led_D0_thinger_io; 
 
 
 
@@ -93,74 +93,89 @@ void myTimerEvent()
   Blynk.virtualWrite(V1, ipstring);
 }
 
-//WiFiServer server(80);
+WiFiServer server(80);
 ThingerESP8266 thing(USERNAME, DEVICE_ID, DEVICE_CREDENTIAL);
 
 void setup()
-{ pinMode(D0,OUTPUT);
-  pinMode(D1,OUTPUT);
-  pinMode(D2,OUTPUT);
-  pinMode(D4,OUTPUT);
+{
+//Declaracion de puertos I/O
+	{	
+		pinMode(D0,OUTPUT);
+		pinMode(D1,OUTPUT);
+		pinMode(D2,OUTPUT);
+		pinMode(D4,OUTPUT);
 
-  
-  
-  digitalWrite(D0,HIGH);
-  digitalWrite(D1,HIGH);
-  digitalWrite(D4,HIGH);
-  digitalWrite(D2,HIGH);
-
+		digitalWrite(D0,HIGH);
+		digitalWrite(D1,HIGH);
+		digitalWrite(D4,HIGH);
+		digitalWrite(D2,HIGH);
+	}
   
   
   Serial.begin(9600);
   Serial.println("HTU21D Example!");
   Serial.println();
   Serial.println();
- // Serial.print("Connecting to ");
-  //Serial.println(ssid);
- thing.add_wifi(ssid, pass);
-
- // WiFi.begin(ssid, pass);
-
-
-  // while (WiFi.status() != WL_CONNECTED) {
-    // delay(500);
-    // Serial.print(".");
-  // }
-  // Serial.println("");
-  // Serial.println("WiFi connected");
+  
+  /* Conexion con thinher.IO*/
+  thing.add_wifi(ssid, pass);
  
-  // // Start the server
-  // server.begin();
-  // Serial.println("Server started");
+  Serial.print("Connecting to ");
+  Serial.println(ssid);
  
-  // // Print the IP address
-  // Serial.print("Use this URL to connect: ");
-  // Serial.print("http://");
-  //Serial.print(WiFi.localIP());
- // ipstring=WiFi.localIP().toString().c_str();
-  //ipAddress=WiFi.localIP();
- // ipstring=String(ipAddress[0])+ String(".") + String(ipAddress[1]) + String(".") + String(ipAddress[2]) + String(".") + String(ipAddress[3]) ;
-  //Blynk.virtualWrite(V1, "ipstring");
-//  Serial.print(ipstring);
-  Serial.println("/");
-
-
+  /* Inicializo la placa WIFI */
+	WiFi.begin(ssid, pass);
+  
+   while (WiFi.status() != WL_CONNECTED) 
+   {
+     delay(500);
+     Serial.print(".");
+   }
+   Serial.println("");
+   Serial.println("WiFi connected");
+ 
+   /* Start the server*/
+   server.begin();
+   Serial.println("Server started");
+ 
+   /* Print the IP address*/
+	Serial.print("Use this URL to connect: ");
+	Serial.print("http://");
+	Serial.print(WiFi.localIP());
+ 
+ {/*******************************************************************************************************/
+ /*Esta parte de codigo se implemento para mostrar la IP en el Display de BLYNK*/
+ // 	ipstring=WiFi.localIP().toString().c_str();
+ //		ipAddress=WiFi.localIP();
+ // 	ipstring=String(ipAddress[0])+ String(".") + String(ipAddress[1]) + String(".") + String(ipAddress[2]) + String(".") + String(ipAddress[3]) ;
+ //		Blynk.virtualWrite(V1, "ipstring");
+ //  	Serial.print(ipstring);
+ //		Serial.println("/");
+/*******************************************************************************************************/
+}
   Wire.begin(D5,D6);
   Blynk.begin(auth, ssid, pass);
   timer.setInterval(1000L, myTimerEvent);
   
-   thing["node"] >> [](pson& out){
-  //thing["Temperatura"] >> temp_para_thinger_io;
+  
+  /*******************************************************************************************************/
+  /* En esta parte se colocan las variable que vas a ser leidas/escritas por thinger.io*/
+   thing["node"] >> [](pson& out)
+   {
+  
     out["Temperatura"] = temp_para_thinger_io;
-	out["Led_D0"] =  led_D0_thinger_io;
+	out["Led_D0"] =  led_D0_thinger_io;       //para el led indicator debe ser una variable entera
+	
+	
 	};
 }
 
 void loop()
 { int control;
+ 
+
   thing.handle();
   Blynk.run();
-  
   timer.run(); // Initiates BlynkTimer
   
   unsigned int rawHumidity = htdu21d_readHumidity();
@@ -170,33 +185,50 @@ void loop()
    temperature_actual = calc_temp(rawtemperature_actual);
    relativeHumidity = calc_humidity(rawHumidity); //Turn the humidity signal into actual humidity
   
+  /*******************************************************************************************************/
+  /* En esta parte del codigo refresco las variables para ser visualizadas en el dashboard de thinger.io*/
   temp_para_thinger_io = temperature_actual; 
   led_D0_thinger_io = flag_ventilador_on ;
   
   
-  
-  Serial.print("temperature_actual: ");
+  /*******************************************************************************************************/
+ 
+
+
+
+/*********************************************************************************************************/
+/*  En esta parte del codigo estan las impresiones por puerto serie al Serial monitor de arduino         */
+
+
+  Serial.print("Temp. Actual: ");
   Serial.print(temperature_actual, 1); //Print float with one decimal
   Serial.print(" C");
   // Serial.print(" Relative Humidity: ");
   //Serial.print(relativeHumidity, 1);
   //Serial.print(" %");
   Serial.print("   ");
-  Serial.print("Setpoint: ");
+  Serial.print("Setpoint Max : ");
   Serial.print(setpoint_float,1);
   Serial.print("   ");
+  Serial.print("Setpoint Min : ");
   Serial.print(sp_temp_min_float,1);
   Serial.print("   ");
   Serial.print(" Flag ventilador: ");
   Serial.print(flag_ventilador_on);
   Serial.print("   ");
-  Serial.print(" debugg temp io ");
-  Serial.print(temp_para_thinger_io,1);
-  
   Serial.println();
   delay(1000);
 
 
+  
+  
+  /********************************************************************************************************/
+  
+  
+  
+  /********************************************************************************************************/
+  /* En esta seccion se ha el lazo de control ON-OFF.*/
+{	
 	sp_temp_min_float=float(sp_temp_min_int);
 	setpoint_float=float(setpoint_int);
 if ((setpoint_float<temperature_actual))
@@ -205,9 +237,8 @@ if ((setpoint_float<temperature_actual))
             {
             digitalWrite(D1, LOW);//enciendo ventilador
 			flag_ventilador_on=HIGH ;// Flag ventilador encendido
-			digitalWrite(D4,LOW);
-			 //led_D0_thinger_io = true ;
-			
+			digitalWrite(D4,LOW);    //Esta salida se uso a modo de debbug.Se puede Borrar.
+			 
 			}
 	}		
 			
@@ -219,31 +250,13 @@ if 	((temperature_actual<(sp_temp_min_float))&&(flag_ventilador_on ==HIGH))
 					digitalWrite(D1, HIGH);
 					digitalWrite(D4,HIGH);
 					flag_ventilador_on= LOW ;
-					//led_D0_thinger_io = false ;
+					
 				}
 
-	
+}	
 
 
-
-
-
-
-
- // if (setpoint_float<temperature_actual)
- // {digitalWrite(D1, LOW);
- // digitalWrite(D2,LOW);
- // flag_ventilador_on=HIGH ;
- // }
-  // if ((setpoint_float>(sp_temp_min_float))&&(flag_ventilador_on ==HIGH))
-  // {
-  // digitalWrite(D1, HIGH);
-  // digitalWrite(D4,LOW);
-  // flag_ventilador_on= LOW ;
-  
-  // }
-  
-  if (Serial.available())
+if (Serial.available())
   
   {
 		control=Serial.read();
