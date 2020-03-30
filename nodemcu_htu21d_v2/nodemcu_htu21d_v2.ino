@@ -77,6 +77,9 @@ int sp_temp_min_int=28;
 float temp_para_thinger_io;  
 float humedad_para_thinger_io;
 int  led_D0_thinger_io; 
+int  led_D1_thinger_io;
+int  led_D2_thinger_io;
+int  led_D4_thinger_io;
 
 
 
@@ -167,7 +170,9 @@ void setup()
     out["Temperatura"] = temp_para_thinger_io;
 	out["Humedad"] = humedad_para_thinger_io;
 	out["Led_D0"] =  led_D0_thinger_io;       //para el led indicator debe ser una variable entera
-	
+	out["Led_D1"] =  led_D1_thinger_io; 
+	out["Led_D2"] =  led_D2_thinger_io; 
+	out["Led_D4"] =  led_D4_thinger_io; 
 	
 	};
 }
@@ -177,7 +182,7 @@ void loop()
  
 
   thing.handle();
-  Blynk.run();
+  //Blynk.run();
   timer.run(); // Initiates BlynkTimer
   
   unsigned int rawHumidity = htdu21d_readHumidity();
@@ -284,6 +289,7 @@ if ((digitalRead(D0))==HIGH)
 {
 port_state[0]="D0:OFF  ";
  //Blynk.tweet("D0 OFF");
+ 
  }
 else
 {
@@ -301,10 +307,16 @@ port_state[1]="D1:ON   ";
 
 if ((digitalRead(D2))==HIGH)
 {
-port_state[2]="D2:OFF  ";}
+port_state[2]="D2:OFF  ";
+led_D1_thinger_io = 0 ;
+
+}
 else
 {
+
 port_state[2]="D2 ON";
+led_D1_thinger_io = 1 ;
+
 }
 
 if ((digitalRead(D4))==HIGH)
@@ -352,8 +364,8 @@ token=false;
 		client.println("HTTP/1.1 200 OK");
 		client.println("Content-Type: text/html");
 		client.println(""); //  do not forget this one
-		client.println("Connection: close");
-		client.println("Refresh: 5");
+		//client.println("Connection: close");
+		//client.println("Refresh: 5");
 		client.println();
 		client.println("<!DOCTYPE HTML>");
 		client.println("<html>");
