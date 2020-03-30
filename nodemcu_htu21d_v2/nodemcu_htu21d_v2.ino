@@ -75,6 +75,7 @@ int sp_temp_min_int=28;
 
 //Variable para thinger.io
 float temp_para_thinger_io;  
+float humedad_para_thinger_io;
 int  led_D0_thinger_io; 
 
 
@@ -164,6 +165,7 @@ void setup()
    {
   
     out["Temperatura"] = temp_para_thinger_io;
+	out["Humedad"] = humedad_para_thinger_io;
 	out["Led_D0"] =  led_D0_thinger_io;       //para el led indicator debe ser una variable entera
 	
 	
@@ -189,7 +191,7 @@ void loop()
   /* En esta parte del codigo refresco las variables para ser visualizadas en el dashboard de thinger.io*/
   temp_para_thinger_io = temperature_actual; 
   led_D0_thinger_io = flag_ventilador_on ;
-  
+  humedad_para_thinger_io = relativeHumidity ;
   
   /*******************************************************************************************************/
  
@@ -198,14 +200,14 @@ void loop()
 
 /*********************************************************************************************************/
 /*  En esta parte del codigo estan las impresiones por puerto serie al Serial monitor de arduino         */
-
+{
 
   Serial.print("Temp. Actual: ");
   Serial.print(temperature_actual, 1); //Print float with one decimal
   Serial.print(" C");
-  // Serial.print(" Relative Humidity: ");
-  //Serial.print(relativeHumidity, 1);
-  //Serial.print(" %");
+  Serial.print(" Humedad Rel: ");
+  Serial.print(relativeHumidity, 1);
+  Serial.print(" %");
   Serial.print("   ");
   Serial.print("Setpoint Max : ");
   Serial.print(setpoint_float,1);
@@ -221,7 +223,7 @@ void loop()
 
 
   
-  
+ } 
   /********************************************************************************************************/
   
   
@@ -256,15 +258,17 @@ if 	((temperature_actual<(sp_temp_min_float))&&(flag_ventilador_on ==HIGH))
 }	
 
 
+   /*******************************************************************************************************/
+   /* En esta seccion se utiliza para leer comandor por puerto serie del Serial monitor */
 if (Serial.available())
   
   {
 		control=Serial.read();
 				switch (control) 
 					{
-						case 0: flag_ventilador_on=HIGH ;
+						case '0': flag_ventilador_on=HIGH ;
 								break;
-						case 1: flag_ventilador_on= LOW ;
+						case '1': flag_ventilador_on= LOW ;
 								break;
 						default:
     // statements
@@ -274,7 +278,8 @@ if (Serial.available())
   
   
  //********************************************************************************************** 
-//visualizacion de puertos para blynk  
+ /*visualizacion de puertos para blynk  */
+{
 if ((digitalRead(D0))==HIGH)
 {
 port_state[0]="D0:OFF  ";
@@ -318,18 +323,21 @@ else{
 ipstring=port_state[2]+ " " + port_state[3];
 token=false;
 }
+
+}
 //********************************************************************************************** 
 
 
 
 
 
-// Check if a client has connected
- // WiFiClient client = server.available();
- // if (!client)
-  {
- //   return;
-  }
+	// Check if a client has connected
+ {
+		WiFiClient client = server.available();
+			if (!client)
+				{
+				return;
+				}
  
   // Wait until the client sends some data
  // Serial.println("new client");
@@ -340,20 +348,19 @@ token=false;
   //  delay(1);
   //}
   
-  // client.flush();
-  // client.println("HTTP/1.1 200 OK");
-  // client.println("Content-Type: text/html");
-  // client.println(""); //  do not forget this one
- // // client.println("Connection: close");
-
- // // client.println("Refresh: 5");
-  // client.println();
-  // client.println("<!DOCTYPE HTML>");
-  // client.println("<html>");
-  // client.println("<br><br>");
+		client.flush();
+		client.println("HTTP/1.1 200 OK");
+		client.println("Content-Type: text/html");
+		client.println(""); //  do not forget this one
+		client.println("Connection: close");
+		client.println("Refresh: 5");
+		client.println();
+		client.println("<!DOCTYPE HTML>");
+		client.println("<html>");
+		client.println("<br><br>");
+	
 //  client.print("Led pin is now: ");
- 
-//  if(value == HIGH) {
+ //  if(value == HIGH) {
 //    client.print("On");
 //  } else {
 //    client.print("Off");
@@ -364,27 +371,30 @@ token=false;
  //client.println("<a href=\"/LED=ON\"\"><button>Turn On </button></a>");
  // client.println("<a href=\"/LED=OFF\"\"><button>Turn Off </button></a><br />");  
   // client.println("<br><br>");
-  // client.println("Temperatura actual:");
-  // client.println(temperature_actual);
-  // client.println("<br><br>");
-  // client.println("Humedad:");
-  // client.print(relativeHumidity);
+ 
+
+		client.println("Temperatura actual:");
+		client.println(temperature_actual);
+		client.println("<br><br>");
   
-  // client.println("<br><br>");
- // // client.println("D0:");
-  // client.println(port_state[0]);
+		client.println("Humedad:");
+		client.print(relativeHumidity);
+		client.println("<br><br>");
+
+		client.println("D0:");
+		client.println(port_state[0]);
   
-  // client.println("<br><br>");
- // // client.println("D1:");
-  // client.println(port_state[1]);
+		client.println("<br><br>");
+		client.println("D1:");
+		client.println(port_state[1]);
   
-  // client.println("<br><br>");
- // // client.println("D2:");
-  // client.println(port_state[2]);
+		client.println("<br><br>");
+		client.println("D2:");
+		client.println(port_state[2]);
   
-  // client.println("<br><br>");
-  // //client.println("D4:");
-  // client.println(port_state[3]);
+		client.println("<br><br>");
+		client.println("D4:");
+		client.println(port_state[3]);
   
   
   
@@ -396,15 +406,15 @@ token=false;
 //  client.println("<br><br>");
 // 
 // client.println("</form>");
- // client.println("</html>");
-//  request="";
- // client.stop();
+  client.println("</html>");
+  request="";
+  client.stop();
  
- // delay(1);
+  delay(1);
   //Serial.println("Client disonnected");
   //Serial.println("");
  }
-
+}// fin de loop
 
 //Read the uncompensated temperature_actual value
 unsigned int htdu21d_readTemp()
