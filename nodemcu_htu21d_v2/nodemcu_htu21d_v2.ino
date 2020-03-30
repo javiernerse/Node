@@ -228,9 +228,10 @@ void loop()
   Serial.print("Setpoint Min : ");
   Serial.print(sp_temp_min_float,1);
   Serial.print("   ");
-  Serial.print(" Flag ventilador: ");
-  Serial.print(flag_ventilador_on);
+  // Serial.print(" Flag ventilador: ");
+  // Serial.print(flag_ventilador_on);
   Serial.print("   ");
+  Serial.print(sp_temp_min_thinger_io);
   Serial.println();
   delay(1000);
 
