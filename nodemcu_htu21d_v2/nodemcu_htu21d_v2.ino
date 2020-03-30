@@ -80,8 +80,7 @@ int  led_D0_thinger_io;
 int  led_D1_thinger_io;
 int  led_D2_thinger_io;
 int  led_D4_thinger_io;
-float sp_temp_max_thinger_io;
-float sp_temp_min_thinger_io;
+
 
 
 
@@ -174,7 +173,7 @@ void setup()
 	out["Led_D1"] =  led_D1_thinger_io; 
 	out["Led_D2"] =  led_D2_thinger_io; 
 	out["Led_D4"] =  led_D4_thinger_io; 
-	out["setpoint_temp_max"] = sp_temp_max_thinger_io ;
+	out["setpoint_temp_max"] = setpoint_float ;
 	out["setpoint_temp_min"] = sp_temp_min_float ;
 	
 	
@@ -213,7 +212,7 @@ void loop()
 
   Serial.print("Temp. Actual: ");
   Serial.print(temperature_actual, 1); //Print float with one decimal
-  Serial.print((char)0xB0);
+  Serial.print((char)223);
   Serial.print("C");
   Serial.print(" Humedad Rel: ");
   Serial.print(relativeHumidity, 1);
@@ -272,8 +271,7 @@ if 	((temperature_actual<(sp_temp_min_float))&&(flag_ventilador_on ==HIGH))
 
    /*******************************************************************************************************/
    /* En esta seccion se utiliza para leer comandor por puerto serie del Serial monitor */
-if (Serial.available())
-  
+if (Serial.available())  
   {
 		control=Serial.read();
 				switch (control) 
@@ -290,7 +288,7 @@ if (Serial.available())
   
   
  //********************************************************************************************** 
- /*visualizacion de puertos para blynk  */
+ /*visualizacion de puertos para blynk y thinger.io */
 {
 if ((digitalRead(D0))==HIGH)
 	{
