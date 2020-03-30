@@ -286,46 +286,52 @@ if (Serial.available())
  /*visualizacion de puertos para blynk  */
 {
 if ((digitalRead(D0))==HIGH)
-{
-port_state[0]="D0:OFF  ";
- //Blynk.tweet("D0 OFF");
- 
- }
+	{
+		port_state[0]="D0:OFF  ";
+		led_D0_thinger_io = 0 ;
+		//Blynk.tweet("D0 OFF");
+	}
 else
-{
-port_state[0]="D0:ON  ";
+	{
+		port_state[0]="D0:ON  ";
+		led_D0_thinger_io = 1 ;
  //Blynk.tweet("D0 ON");
-}
+	}
 
 if ((digitalRead(D1))==HIGH)
-{
-port_state[1]="D1:OFF  ";}
+	{
+		port_state[1]="D1:OFF  ";
+		led_D1_thinger_io = 0 ;
+	}	
 else
-{
-port_state[1]="D1:ON   ";
-}
+	{
+		port_state[1]="D1:ON   ";
+		led_D1_thinger_io = 1 ;
+	}
 
 if ((digitalRead(D2))==HIGH)
-{
-port_state[2]="D2:OFF  ";
-led_D1_thinger_io = 0 ;
-
-}
+	{
+		port_state[2]="D2:OFF  ";
+		led_D2_thinger_io = 0 ;
+	}
 else
-{
-
-port_state[2]="D2 ON";
-led_D1_thinger_io = 1 ;
-
-}
+	{
+		port_state[2]="D2 ON";
+		led_D2_thinger_io = 1 ;
+	}
 
 if ((digitalRead(D4))==HIGH)
-{
-port_state[3]="D4:OFF";}
+	{
+		port_state[3]="D4:OFF";
+		led_D4_thinger_io = 0 ;
+	}
 else
-{
-port_state[3]="D4:ON";
-}
+	{
+		port_state[3]="D4:ON";
+		led_D4_thinger_io = 1 ;
+	}
+
+
 if (token==false)
 {
 ipstring=port_state[0]+ " " + port_state[1];
