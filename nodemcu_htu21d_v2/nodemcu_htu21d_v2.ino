@@ -149,6 +149,7 @@ void setup()
    thing["node"] >> [](pson& out){
   //thing["Temperatura"] >> temp_para_thinger_io;
     out["Temperatura"] = temp_para_thinger_io;
+	out["Led D0"] = flag_ventilador_on;
 	};
 }
 
